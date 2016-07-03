@@ -1,4 +1,4 @@
-require 'config_file_finder/version'
+require 'results'
 
 class ConfigFileFinder
   attr_accessor :root_patterns
@@ -24,7 +24,7 @@ class ConfigFileFinder
     dir = Dir.pwd
     loop do
       file = File.expand_path(@config_file_name, dir)
-      return { result: :success, files: [{ config_type(dir) => file }] } if File.exist? file
+      return Results.new(:success, [{ config_type(dir) => file }]) if File.exist? file
       break if stop_searching? dir
       dir = File.expand_path('..', dir)
     end
@@ -50,7 +50,7 @@ class ConfigFileFinder
     dir_type = dir_type(dir)
     message = "Couldn't find config file #{@config_file_name}, "\
               "stopping search at #{dir_type.to_s.tr('_', ' ')} directory"
-    { result: :failed, files: [dir_type => dir], message: message }
+    Results.new :failed, [dir_type => dir], message
   end
 
   def stop_searching?(dir)
