@@ -40,11 +40,12 @@ describe ConfigFileFinder do
           end
 
           it 'stops traversing at the user root' do
-            expect(subject[:files]).to include({ user_root: '/users/me' })
+            expect(subject[:files]).to include(user_root: '/users/me')
           end
 
           it 'exists with an failure message about not finding the project root' do
-            expect(subject[:message]).to eq "Couldn't find config file .config.yml, stopping search at user root directory"
+            expect(subject[:message]).to eq "Couldn't find config file .config.yml, "\
+                                            'stopping search at user root directory'
           end
 
           it 'exists with a failed result' do
@@ -59,11 +60,12 @@ describe ConfigFileFinder do
           end
 
           it 'stops traversing at the project root' do
-            expect(subject[:files]).to include({ project_root: '/users/me/project/root' })
+            expect(subject[:files]).to include(project_root: '/users/me/project/root')
           end
 
           it 'exists with an error message about no finding the config file .config.yml' do
-            expect(subject[:message]).to eq "Couldn't find config file .config.yml, stopping search at project root directory"
+            expect(subject[:message]).to eq "Couldn't find config file .config.yml, "\
+                                            'stopping search at project root directory'
           end
 
           it 'exists with a failed result' do
@@ -95,11 +97,12 @@ describe ConfigFileFinder do
       context 'when no config file exists' do
         context 'when no project root patterns are found' do
           it 'stops traversing at the user root' do
-            expect(subject[:files]).to include({ user_root: '/users/me' })
+            expect(subject[:files]).to include(user_root: '/users/me')
           end
 
           it 'exists with an failure message about not finding the project root' do
-            expect(subject[:message]).to eq "Couldn't find config file .config.yml, stopping search at user root directory"
+            expect(subject[:message]).to eq "Couldn't find config file .config.yml, "\
+                                            'stopping search at user root directory'
           end
 
           it 'exists with a failed result' do
@@ -114,11 +117,12 @@ describe ConfigFileFinder do
           end
 
           it 'stops traversing at the project root' do
-            expect(subject[:files]).to include({ project_root: '/users/me/project/root' })
+            expect(subject[:files]).to include(project_root: '/users/me/project/root')
           end
 
           it 'exists with an error message about no finding the config file .config.yml' do
-            expect(subject[:message]).to eq "Couldn't find config file .config.yml, stopping search at project root directory"
+            expect(subject[:message]).to eq "Couldn't find config file .config.yml, "\
+                                            'stopping search at project root directory'
           end
 
           it 'exists with a failed result' do

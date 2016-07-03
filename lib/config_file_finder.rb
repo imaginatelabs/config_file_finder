@@ -48,7 +48,8 @@ class ConfigFileFinder
 
   def failure_results(dir)
     dir_type = dir_type(dir)
-    message = "Couldn't find config file #{@config_file_name}, stopping search at #{dir_type.to_s.gsub(/_/, ' ')} directory"
+    message = "Couldn't find config file #{@config_file_name}, "\
+              "stopping search at #{dir_type.to_s.tr('_', ' ')} directory"
     { result: :failed, files: [dir_type => dir], message: message }
   end
 
