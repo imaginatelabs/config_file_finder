@@ -1,13 +1,15 @@
 require 'spec_helper'
 
 describe ConfigFileFinder do
+  let(:config_file_finder) { ConfigFileFinder.new(config_file_name, options) }
+
+  let(:config_file_name) { '.config.yml' }
+  let(:options) { {} }
+
+  let(:user_root) { '/users/me' }
+
   describe 'find' do
     subject { config_file_finder.find }
-
-    let(:config_file_finder) { ConfigFileFinder.new(config_file_name, options) }
-    let(:config_file_name) { '.config.yml' }
-    let(:options) { {} }
-    let(:user_root) { '/users/me' }
 
     before do
       allow(Dir).to receive(:home).and_return(user_root)
@@ -127,6 +129,51 @@ describe ConfigFileFinder do
 
           it 'exists with a failed result' do
             expect(subject[:result]).to eq :failed
+          end
+        end
+      end
+    end
+  end
+
+  describe 'add_root_pattern' do
+    subject { config_file_finder.find }
+
+    let(:config_file_finder) { ConfigFileFinder.new(config_file_name, options) }
+    let(:project_root_child) { '/users/me/project/root/child' }
+
+    before { allow(Dir).to receive(:pwd).and_return(project_root_child) }
+
+    context 'when adding a single pattern' do
+      context 'when working dir is in a child dir of the project root' do
+        before { config_file_finder.add_root_patterns '.foo' }
+
+        context 'when config file exists at the project root' do
+          before do
+            allow(File).to receive(:exist?).and_return(false)
+            allow(File).to receive(:exist?).with('/users/me/project/root/.foo').and_return(true)
+            allow(File).to receive(:exist?).with('/users/me/project/root/.config.yml').and_return(true)
+          end
+
+          it 'finds the config file' do
+            expect(subject[:files].first[:project_root_config]).to eq '/users/me/project/root/.config.yml'
+          end
+        end
+      end
+    end
+
+    context 'when adding an array of patterns' do
+      context 'when working dir is in a child dir of the project root' do
+        before { config_file_finder.add_root_patterns ['.foo'] }
+
+        context 'when config file exists at the project root' do
+          before do
+            allow(File).to receive(:exist?).and_return(false)
+            allow(File).to receive(:exist?).with('/users/me/project/root/.foo').and_return(true)
+            allow(File).to receive(:exist?).with('/users/me/project/root/.config.yml').and_return(true)
+          end
+
+          it 'finds the config file' do
+            expect(subject[:files].first[:project_root_config]).to eq '/users/me/project/root/.config.yml'
           end
         end
       end
